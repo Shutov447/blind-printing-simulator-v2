@@ -5,11 +5,14 @@
         {
             "files": ["*.ts"],
             "parserOptions": {
-                "project": ["tsconfig.*?.json", "e2e/tsconfig.json"],
+                // "parser": "@typescript-eslint/parser",
+                "project": ["tsconfig.*?.json"],
+                // "tsconfigRootDir": "__dirname",
                 "createDefaultProgram": true
             },
             "extends": [
                 "eslint:recommended",
+                "plugin:import/recommended",
                 "plugin:@typescript-eslint/recommended",
                 "plugin:@angular-eslint/recommended",
                 "plugin:@angular-eslint/template/process-inline-templates",
@@ -32,7 +35,9 @@
                         "prefix": "app",
                         "style": "kebab-case"
                     }
-                ]
+                ],
+                "@typescript-eslint/lines-between-class-members": "off",
+                "@typescript-eslint/no-unused-expressions": "off"
             }
         },
         {
@@ -41,12 +46,15 @@
                 "plugin:@angular-eslint/template/recommended",
                 "plugin:@angular-eslint/template/accessibility"
             ],
-            "rules": {}
+            "rules": {
+                "@angular-eslint/template/click-events-have-key-events": "off",
+                "@angular-eslint/template/interactive-supports-focus": "off"
+            }
         },
         {
             "files": ["src/**/*.spec.ts", "src/**/*.d.ts"],
             "parserOptions": {
-                "project": "./src/tsconfig.spec.json"
+                "project": "./tsconfig.spec.json"
             },
             "extends": ["plugin:jasmine/recommended"],
             "plugins": ["jasmine"],
