@@ -5,8 +5,9 @@
         {
             "files": ["*.ts"],
             "parserOptions": {
-                // "parser": "@typescript-eslint/parser",
-                "project": ["tsconfig.*?.json"],
+                // "ignorePatterns": [".eslintrc.json"],
+                "parser": "@typescript-eslint/parser",
+                "project": ["tsconfig.json"],
                 // "tsconfigRootDir": "__dirname",
                 "createDefaultProgram": true
             },
@@ -37,7 +38,16 @@
                     }
                 ],
                 "@typescript-eslint/lines-between-class-members": "off",
-                "@typescript-eslint/no-unused-expressions": "off"
+                "@typescript-eslint/no-unused-expressions": "off",
+                "no-console": "error",
+                "import/no-extraneous-dependencies": [
+                    "off",
+                    {
+                        "devDependencies": false,
+                        "optionalDependencies": false,
+                        "peerDependencies": false
+                    }
+                ]
             }
         },
         {

@@ -6,6 +6,10 @@
     class="main"
     (click)="onClick()"
 >
+    <mat-spinner
+        class="loading"
+        *ngIf="isLoading$ | async"
+    ></mat-spinner>
     <app-text [template]="isStart ? textForTyping : intro"></app-text>
 </main>
 
@@ -16,6 +20,7 @@
 <ng-template #intro>Кликните, чтобы начать</ng-template>
 
 <ng-template #textForTyping>
+    {{ text }}
     <!-- заюзать директиву for чтобы по буквам составить текст -->
     <!-- написать сервис для текстов -->
 </ng-template>
