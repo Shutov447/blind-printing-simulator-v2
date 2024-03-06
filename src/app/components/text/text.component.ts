@@ -1,14 +1,12 @@
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
-    Input,
-    OnChanges,
-    SimpleChanges,
-    TemplateRef,
+    OnInit,
     ViewChild,
     ViewContainerRef,
 } from '@angular/core';
-
+import { TemplateService } from '../../shared/template-app-to-text/template.service';
 @Component({
     selector: 'app-text',
     standalone: true,
@@ -17,20 +15,31 @@ import {
     styleUrl: './text.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextComponent implements OnChanges {
-    @Input() template: TemplateRef<unknown> | undefined;
-
+export class TextComponent implements OnInit {
     @ViewChild('viewContainer', { read: ViewContainerRef, static: true })
     private readonly viewContainer: ViewContainerRef | undefined;
 
-    ngOnChanges({ template }: SimpleChanges) {
-        if (template) {
-            this.updateView();
-        }
+    constructor(
+        private readonly cdr: ChangeDetectorRef,
+        private readonly templateService: TemplateService,
+    ) {}
+
+    ngOnInit() {
+        this.updateView();
     }
 
     updateView() {
-        this.viewContainer?.clear();
-        this.template && this.viewContainer?.createEmbeddedView(this.template);
+        this.templateService.templatesData$.subscribe((templatesData) => {
+            this.viewContainer?.clear();
+            this.cdr.markForCheck();
+
+            for (const key in templatesData) {
+                templatesData[key].isShow &&
+                    this.viewContainer?.createEmbeddedView(
+                        templatesData[key].template,
+                    );
+            }
+            this.cdr.markForCheck();
+        });
     }
 }

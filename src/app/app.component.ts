@@ -4,6 +4,9 @@ import {
     Component,
     Inject,
     OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GearComponent } from './components/gear/gear.component';
@@ -14,6 +17,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TemplateService } from './shared/template-app-to-text/template.service';
+import { TemplatesToShow } from './shared/template-app-to-text/template-to-show.enum';
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -27,31 +32,54 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
-    providers: [TextService],
+    providers: [TextService, TemplateService],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnDestroy {
-    readonly title = 'blind-printing-simulator-v2';
-
+export class AppComponent implements OnDestroy, OnInit {
     private readonly destroy$ = new Subject<void>();
     private readonly _isLoading$ = new BehaviorSubject<boolean>(false);
+
+    private canClick = true;
+
+    readonly title = 'blind-printing-simulator-v2';
     readonly isLoading$ = this._isLoading$.asObservable();
 
     text = '';
-    canClick = true;
-    isStart = false;
+    isStartTypingText = false;
+    isStartIntro = true;
+
+    @ViewChild('textForTyping', {
+        read: TemplateRef,
+        static: true,
+    })
+    textForTyping: TemplateRef<unknown> | undefined;
+    @ViewChild('intro', {
+        read: TemplateRef,
+        static: true,
+    })
+    intro: TemplateRef<unknown> | undefined;
 
     constructor(
-        @Inject(SOURCE_TEXTS_URL) readonly textsUrl: string,
+        @Inject(SOURCE_TEXTS_URL) readonly sourceTextsUrl: string,
         private readonly cdr: ChangeDetectorRef,
         private readonly textService: TextService,
+        readonly templateService: TemplateService,
     ) {}
+
+    ngOnInit() {
+        this.passTemplate();
+        this.setTemplatesFlags();
+    }
+
+    ngOnDestroy() {
+        this.fullUnsubscribe();
+    }
 
     onClick() {
         this.getStarted();
     }
 
-    getStarted() {
+    private getStarted() {
         if (this.canClick) {
             this._isLoading$.next(true);
             this.textService
@@ -64,8 +92,10 @@ export class AppComponent implements OnDestroy {
                     },
                     complete: () => {
                         this._isLoading$.next(false);
-                        this.isStart = !this.isStart;
-                        this.cdr.markForCheck();
+                        this.templateService.passToShow(
+                            TemplatesToShow.textForTyping,
+                        );
+                        this.setTemplatesFlags();
                     },
                 });
         }
@@ -73,12 +103,30 @@ export class AppComponent implements OnDestroy {
         this.canClick = false;
     }
 
-    ngOnDestroy() {
-        this.isLoading$.pipe(takeUntil(this.destroy$));
-        this._isLoading$.pipe(takeUntil(this.destroy$));
+    private passTemplate() {
+        this.templateService.getTemplatesData({
+            textForTyping: {
+                template: this.textForTyping!,
+                isShow: this.isStartTypingText,
+            },
+            intro: {
+                template: this.intro!,
+                isShow: this.isStartIntro,
+            },
+        });
+    }
 
+    fullUnsubscribe() {
+        this.isLoading$.pipe(takeUntil(this.destroy$));
         this.destroy$.next();
         this.destroy$.complete();
-        this.destroy$.unsubscribe();
+    }
+
+    private setTemplatesFlags() {
+        this.templateService.templatesData$.subscribe((templatesData) => {
+            this.isStartTypingText = templatesData['textForTyping'].isShow;
+            this.isStartIntro = templatesData['intro'].isShow;
+            this.cdr.markForCheck();
+        });
     }
 }

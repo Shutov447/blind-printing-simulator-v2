@@ -10,17 +10,22 @@
         class="loading"
         *ngIf="isLoading$ | async"
     ></mat-spinner>
-    <app-text [template]="isStart ? textForTyping : intro"></app-text>
+    <!-- <app-text [template]="isStart ? textForTyping : intro"></app-text> -->
+    <app-text></app-text>
 </main>
 
 <footer class="footer">
-    <div><a [href]="textsUrl">Источник текстов</a></div>
+    <div><a [href]="sourceTextsUrl">Источник текстов</a></div>
 </footer>
 
-<ng-template #intro>Кликните, чтобы начать</ng-template>
+<ng-template #intro
+    ><div *ngIf="isStartIntro">Кликните, чтобы начать</div></ng-template
+>
 
-<ng-template #textForTyping>
-    {{ text }}
-    <!-- заюзать директиву for чтобы по буквам составить текст -->
-    <!-- написать сервис для текстов -->
+<ng-template #textForTyping
+    ><div *ngIf="isStartTypingText">
+        {{ text }}
+        <!-- заюзать директиву for чтобы по буквам составить текст -->
+        <!-- написать сервис для текстов -->
+    </div>
 </ng-template>
