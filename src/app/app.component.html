@@ -12,14 +12,12 @@
     *ngIf="loadingService.isLoading$ | async"
 ></mat-spinner>
 
-<ng-template #intro
+<!-- <ng-template #intro
     ><div *ngIf="isStartIntro">Кликните, чтобы начать</div></ng-template
->
+> -->
 
-<ng-template #textForTyping
+<!-- <ng-template #textForTyping
     ><div *ngIf="isStartTypingText">
         {{ this.textService.texts$ | async }}
-        <!-- заюзать директиву for чтобы по буквам составить текст -->
-        <!-- написать сервис для текстов -->
     </div>
-</ng-template>
+</ng-template> -->

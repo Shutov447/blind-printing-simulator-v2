@@ -1,0 +1,9 @@
+<div
+    *ngIf="
+        (this.componentsDataService.componentsData$ | async)?.[
+            'app-text-for-typing'
+        ]
+    "
+>
+    text
+</div>

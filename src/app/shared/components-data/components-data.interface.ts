@@ -1,1 +1,3 @@
-export interface IComponentsData {}
+export interface IComponentsData {
+    [name: string]: boolean;
+}

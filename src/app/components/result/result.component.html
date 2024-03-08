@@ -1,1 +1,5 @@
-<p>result works!</p>
+<div
+    *ngIf="(this.componentsDataService.componentsData$ | async)?.['app-result']"
+>
+    result works!
+</div>
