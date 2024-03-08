@@ -15,10 +15,10 @@ import { TextComponent } from './components/text/text.component';
 import { TextService } from './shared/text/text.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TemplateService } from './shared/template-app-to-text/template.service';
-import { TemplatesToShow } from './shared/template-app-to-text/template-to-show.enum';
+import { LoadingService } from './shared/loading/loading.service';
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -32,17 +32,15 @@ import { TemplatesToShow } from './shared/template-app-to-text/template-to-show.
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
-    providers: [TextService, TemplateService],
+    providers: [TextService, TemplateService, LoadingService],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnDestroy, OnInit {
     private readonly destroy$ = new Subject<void>();
-    private readonly _isLoading$ = new BehaviorSubject<boolean>(false);
 
-    private canClick = true;
+    private canSwitchTemplate = true;
 
     readonly title = 'blind-printing-simulator-v2';
-    readonly isLoading$ = this._isLoading$.asObservable();
 
     text = '';
     isStartTypingText = false;
@@ -62,12 +60,13 @@ export class AppComponent implements OnDestroy, OnInit {
     constructor(
         @Inject(SOURCE_TEXTS_URL) readonly sourceTextsUrl: string,
         private readonly cdr: ChangeDetectorRef,
-        private readonly textService: TextService,
-        readonly templateService: TemplateService,
+        readonly textService: TextService,
+        private readonly templateService: TemplateService,
+        readonly loadingService: LoadingService,
     ) {}
 
     ngOnInit() {
-        this.passTemplate();
+        this.passTemplates();
         this.setTemplatesFlags();
     }
 
@@ -75,36 +74,37 @@ export class AppComponent implements OnDestroy, OnInit {
         this.fullUnsubscribe();
     }
 
-    onClick() {
-        this.getStarted();
-    }
+    // onClick() {
+    //     this.getStarted();
+    // }
 
-    private getStarted() {
-        if (this.canClick) {
-            this._isLoading$.next(true);
-            this.textService
-                .requestText$('assets/texts_for_typing.json')
-                .pipe(takeUntil(this.destroy$))
-                .subscribe({
-                    next: (texts) => {
-                        this.text = texts[0].text;
-                        this.cdr.markForCheck();
-                    },
-                    complete: () => {
-                        this._isLoading$.next(false);
-                        this.templateService.passToShow(
-                            TemplatesToShow.textForTyping,
-                        );
-                        this.setTemplatesFlags();
-                    },
-                });
-        }
+    // private getStarted() {
+    // условие на активность состояния шаблонов и в зависимости от них по клику мы переходим на нужный нам шаблон
+    // (условие на шаблон с текстом), а где в другом компоненте условние на шаблон с результатами
+    // if (this.canSwitchTemplate) {
+    //     this.loadingService.load$(true);
+    //     this.textService
+    //         .requestText$('assets/texts_for_typing.json')
+    //         .pipe(takeUntil(this.destroy$))
+    //         .subscribe({
+    //             next: (texts) => {
+    //                 this.text = texts[14].text;
+    //                 // this.cdr.markForCheck();
+    //             },
+    //             complete: () => {
+    //                 this.loadingService.load$(false);
+    //                 this.templateService.passToShow(
+    //                     TemplatesToShow.textForTyping,
+    //                 );
+    //                 // this.setTemplatesFlags();
+    //             },
+    //         });
+    // }
+    // this.canSwitchTemplate = false;
+    // }
 
-        this.canClick = false;
-    }
-
-    private passTemplate() {
-        this.templateService.getTemplatesData({
+    private passTemplates() {
+        this.templateService.setTemplatesData$({
             textForTyping: {
                 template: this.textForTyping!,
                 isShow: this.isStartTypingText,
@@ -117,7 +117,7 @@ export class AppComponent implements OnDestroy, OnInit {
     }
 
     fullUnsubscribe() {
-        this.isLoading$.pipe(takeUntil(this.destroy$));
+        this.loadingService.unsub();
         this.destroy$.next();
         this.destroy$.complete();
     }
@@ -126,7 +126,7 @@ export class AppComponent implements OnDestroy, OnInit {
         this.templateService.templatesData$.subscribe((templatesData) => {
             this.isStartTypingText = templatesData['textForTyping'].isShow;
             this.isStartIntro = templatesData['intro'].isShow;
-            this.cdr.markForCheck();
+            // this.cdr.markForCheck();
         });
     }
 }

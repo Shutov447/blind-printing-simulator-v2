@@ -2,21 +2,15 @@
     <app-gear class="gear"></app-gear>
 </header>
 
-<main
-    class="main"
-    (click)="onClick()"
->
-    <mat-spinner
-        class="loading"
-        *ngIf="isLoading$ | async"
-    ></mat-spinner>
-    <!-- <app-text [template]="isStart ? textForTyping : intro"></app-text> -->
-    <app-text></app-text>
-</main>
-
+<app-text class="main"></app-text>
 <footer class="footer">
     <div><a [href]="sourceTextsUrl">Источник текстов</a></div>
 </footer>
+
+<mat-spinner
+    class="loading"
+    *ngIf="loadingService.isLoading$ | async"
+></mat-spinner>
 
 <ng-template #intro
     ><div *ngIf="isStartIntro">Кликните, чтобы начать</div></ng-template
@@ -24,7 +18,7 @@
 
 <ng-template #textForTyping
     ><div *ngIf="isStartTypingText">
-        {{ text }}
+        {{ this.textService.texts$ | async }}
         <!-- заюзать директиву for чтобы по буквам составить текст -->
         <!-- написать сервис для текстов -->
     </div>

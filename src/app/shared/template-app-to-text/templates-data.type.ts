@@ -1,7 +1,7 @@
 import { TemplateRef } from '@angular/core';
 
 export type TemplatesData = {
-    [i: string]: {
+    [templateName: string]: {
         template: TemplateRef<unknown>;
         isShow: boolean;
     };

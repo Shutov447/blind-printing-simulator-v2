@@ -8,10 +8,17 @@ import { TemplatesToShow } from './template-to-show.enum';
 })
 export class TemplateService {
     private readonly _templatesData$ = new BehaviorSubject<TemplatesData>({});
-    readonly templatesData$ = this._templatesData$.asObservable();
+    private readonly _isSwitchTemplate$ = new BehaviorSubject<boolean>(false);
 
-    getTemplatesData(templatesData: TemplatesData) {
+    readonly templatesData$ = this._templatesData$.asObservable();
+    readonly isSwitchTemplate$ = this._isSwitchTemplate$.asObservable();
+
+    setTemplatesData$(templatesData: TemplatesData) {
         this._templatesData$.next(templatesData);
+    }
+
+    setIsSwitchTemplate$(isSwitchTemplate: boolean) {
+        this._isSwitchTemplate$.next(isSwitchTemplate);
     }
 
     passToShow(templateToShow: TemplatesToShow) {
@@ -34,6 +41,6 @@ export class TemplateService {
             }
         }
 
-        this._templatesData$.next(obj);
+        this.setTemplatesData$(obj);
     }
 }
