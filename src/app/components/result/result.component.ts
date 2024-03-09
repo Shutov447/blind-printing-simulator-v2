@@ -25,9 +25,5 @@ export class ResultComponent implements OnInit {
     ngOnInit() {
         this.componentData &&
             this.componentsDataService.addComponentData$(this.componentData);
-        this.componentsDataService.componentsData$.subscribe((data) => {
-            data;
-        });
-        // console.log('result init');
     }
 }

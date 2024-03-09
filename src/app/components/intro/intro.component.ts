@@ -25,6 +25,5 @@ export class IntroComponent implements OnInit {
     ngOnInit() {
         this.componentData &&
             this.componentsDataService.addComponentData$(this.componentData);
-        // console.log('intro init');
     }
 }

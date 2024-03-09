@@ -25,6 +25,5 @@ export class TextForTypingComponent implements OnInit {
     ngOnInit() {
         this.componentData &&
             this.componentsDataService.addComponentData$(this.componentData);
-        // console.log('text-for-typing init');
     }
 }
