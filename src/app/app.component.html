@@ -1,8 +1,10 @@
 <header class="header">
     <app-gear class="gear"></app-gear>
 </header>
+<main class="main">
+    <app-text></app-text>
+</main>
 
-<app-text class="main"></app-text>
 <footer class="footer">
     <div><a [href]="sourceTextsUrl">Источник текстов</a></div>
 </footer>
@@ -11,13 +13,3 @@
     class="loading"
     *ngIf="loadingService.isLoading$ | async"
 ></mat-spinner>
-
-<!-- <ng-template #intro
-    ><div *ngIf="isStartIntro">Кликните, чтобы начать</div></ng-template
-> -->
-
-<!-- <ng-template #textForTyping
-    ><div *ngIf="isStartTypingText">
-        {{ this.textService.texts$ | async }}
-    </div>
-</ng-template> -->

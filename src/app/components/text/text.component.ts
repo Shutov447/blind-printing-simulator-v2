@@ -1,38 +1,31 @@
-import {
-    ChangeDetectionStrategy,
-    // ChangeDetectorRef,
-    Component,
-    // HostListener,
-    // OnDestroy,
-    // OnInit,
-    // ViewChild,
-    // ViewContainerRef,
-} from '@angular/core';
-// import { TemplateService } from '../../shared/template-app-to-text/template.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LoadingService } from '../../shared/loading/loading.service';
 import { TextService } from '../../shared/text/text.service';
-// import { TemplatesToShow } from '../../shared/template-app-to-text/template-to-show.enum';
-// import { Subject, takeUntil } from 'rxjs';
 import { TextForTypingComponent } from '../text-for-typing/text-for-typing.component';
 import { IntroComponent } from '../intro/intro.component';
 import { ResultComponent } from '../result/result.component';
 import { ComponentsDataService } from '../../shared/components-data/components-data.service';
+import { CommonModule } from '@angular/common';
+import { ComponentsDataSingletonService } from '../../shared/components-data/components-data-singleton.service';
 @Component({
     selector: 'app-text',
     standalone: true,
     templateUrl: './text.component.html',
     styleUrl: './text.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        // TemplateService,
-        LoadingService,
-        TextService,
-        ComponentsDataService,
+    providers: [LoadingService, TextService, ComponentsDataService],
+    imports: [
+        CommonModule,
+        TextForTypingComponent,
+        IntroComponent,
+        ResultComponent,
     ],
-    imports: [TextForTypingComponent, IntroComponent, ResultComponent],
 })
 export class TextComponent {
-    constructor(readonly componentsDataService: ComponentsDataService) {}
+    constructor(
+        readonly componentsDataService: ComponentsDataService,
+        readonly componentsDataSingletonService: ComponentsDataSingletonService,
+    ) {}
 }
 
 // export class TextComponent implements OnInit, OnDestroy {

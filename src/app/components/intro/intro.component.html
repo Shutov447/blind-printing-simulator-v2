@@ -1,5 +1,10 @@
 <div
-    *ngIf="(this.componentsDataService.componentsData$ | async)?.['app-intro']"
+    class="content"
+    *ngIf="
+        (this.componentsDataSingletonService.componentsData$ | async)?.[
+            'app-intro'
+        ]
+    "
 >
     Кликните, чтобы начать
 </div>

@@ -8,6 +8,8 @@ import { ComponentsDataSingletonService } from './components-data-singleton.serv
     providedIn: 'root',
 })
 export class ComponentsDataService {
+    private readonly storeComponentsData =
+        this.componentsDataSingletonService.componentsData;
     private readonly _componentsData$ = new BehaviorSubject<IComponentsData>(
         {},
     );
@@ -18,10 +20,28 @@ export class ComponentsDataService {
     ) {}
 
     addComponentData$(componentData: IComponentData) {
-        this.componentsDataSingletonService.componentsData[componentData.name] =
-            componentData.isShow;
-        this._componentsData$.next(
-            this.componentsDataSingletonService.componentsData,
+        this.storeComponentsData[componentData.name] = componentData.isShow;
+        this._componentsData$.next(this.storeComponentsData);
+    }
+
+    showOnlyOneComponent(componentName: IComponentData['name']) {
+        for (const currentComponentName in this.storeComponentsData) {
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    this.storeComponentsData,
+                    currentComponentName,
+                )
+            ) {
+                if (currentComponentName !== componentName) {
+                    this.storeComponentsData[currentComponentName] = false;
+                } else {
+                    this.storeComponentsData[currentComponentName] = true;
+                }
+            }
+        }
+
+        this.componentsDataSingletonService.updateComponentsData$(
+            this.storeComponentsData,
         );
     }
 }

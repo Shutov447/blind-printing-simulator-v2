@@ -1,9 +1,14 @@
 <div
+    class="content"
     *ngIf="
-        (this.componentsDataService.componentsData$ | async)?.[
+        (this.componentsDataSingletonService.componentsData$ | async)?.[
             'app-text-for-typing'
         ]
     "
 >
-    text
+    {{
+        (this.componentsDataSingletonService.componentsData$ | async)?.[
+            'app-text-for-typing'
+        ]
+    }}
 </div>

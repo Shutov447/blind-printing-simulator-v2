@@ -1,15 +1,7 @@
-<main>
-    <app-intro
-        [componentData]="{ name: 'app-intro', isShow: true }"
-    ></app-intro>
-    <app-text-for-typing
-        [componentData]="{ name: 'app-text-for-typing', isShow: false }"
-    ></app-text-for-typing>
-    <app-result
-        [componentData]="{ name: 'app-result', isShow: false }"
-    ></app-result>
-</main>
-
-<!-- <main class="text">
-    <ng-container #viewContainer></ng-container>
-</main> -->
+<app-intro [componentData]="{ name: 'app-intro', isShow: true }"></app-intro>
+<app-text-for-typing
+    [componentData]="{ name: 'app-text-for-typing', isShow: false }"
+></app-text-for-typing>
+<app-result
+    [componentData]="{ name: 'app-result', isShow: false }"
+></app-result>
