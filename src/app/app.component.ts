@@ -1,12 +1,8 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     Inject,
-    // OnDestroy,
-    // OnInit,
-    // TemplateRef,
-    // ViewChild,
+    OnDestroy,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GearComponent } from './components/gear/gear.component';
@@ -15,10 +11,10 @@ import { TextComponent } from './components/text/text.component';
 import { TextService } from './shared/text/text.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-// import { Subject } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TemplateService } from './shared/template-app-to-text/template.service';
 import { LoadingService } from './shared/loading/loading.service';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -35,14 +31,23 @@ import { LoadingService } from './shared/loading/loading.service';
     providers: [TextService, TemplateService, LoadingService],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
+    private readonly destroy$ = new Subject<void>();
+
+    readonly isLoading$ = this.loadingService.isLoading$.pipe(
+        takeUntil(this.destroy$),
+    );
+
     constructor(
         @Inject(SOURCE_TEXTS_URL) readonly sourceTextsUrl: string,
-        private readonly cdr: ChangeDetectorRef,
         readonly textService: TextService,
-        // private readonly templateService: TemplateService,
         readonly loadingService: LoadingService,
     ) {}
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
 }
 // export class AppComponent implements OnDestroy, OnInit {
 //     private readonly destroy$ = new Subject<void>();
