@@ -1,0 +1,8 @@
+<div>
+    <span *ngIf="minuts > 9; else digitMinut">{{ minuts }}</span>
+    <span>:</span>
+    <span *ngIf="seconds > 9; else digitSecond">{{ seconds }}</span>
+</div>
+
+<ng-template #digitMinut>0{{ minuts }}</ng-template>
+<ng-template #digitSecond>0{{ seconds }}</ng-template>

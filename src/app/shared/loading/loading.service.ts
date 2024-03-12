@@ -5,14 +5,10 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root',
 })
 export class LoadingService {
-    private readonly _isLoading$ = new BehaviorSubject<boolean>(false);
+    private readonly _isLoading$ = new BehaviorSubject<boolean | null>(false);
     readonly isLoading$ = this._isLoading$.asObservable();
 
-    load$(flag: boolean) {
-        this._isLoading$.next(flag);
-    }
-
-    unsub() {
-        this._isLoading$.unsubscribe();
+    load$(isLoad: boolean) {
+        this._isLoading$.next(isLoad);
     }
 }

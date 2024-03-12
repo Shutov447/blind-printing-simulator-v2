@@ -1,22 +1,71 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IText } from './text.interface';
+import { Text } from './text.type';
+import { LoadingService } from '../loading/loading.service';
+import { textRandomizer } from '../utils/text-randomizer';
+import { sliceText } from '../utils/slice-text';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'platform',
 })
 export class TextService {
-    private readonly _texts$ = new BehaviorSubject<IText['text'] | null>(null);
-    readonly texts$ = this._texts$.asObservable();
+    private readonly _slicedText$ = new BehaviorSubject<string[]>([]);
+    readonly slicedText$ = this._slicedText$.asObservable();
 
-    constructor(private readonly http: HttpClient) {}
+    private readonly _textForTypingLength$ = new BehaviorSubject<number>(0);
+    readonly textForTypingLength$ = this._textForTypingLength$.asObservable();
 
-    requestText$(url: string): Observable<IText[]> {
-        return this.http.get<IText[]>(url);
+    private texts: IText[] = [];
+
+    constructor(
+        @Inject(HttpClient)
+        private readonly http: HttpClient,
+        @Inject(LoadingService)
+        private readonly loadingService: LoadingService,
+    ) {}
+
+    requestText$(url: string, type: Text): Observable<string[]> {
+        if (!this.texts.length) {
+            this.loadingService.load$(true);
+            this.http.get<IText[]>(url).subscribe({
+                next: (texts) => {
+                    this.chooseText(texts, type);
+                    this.texts = texts;
+                },
+                complete: () => {
+                    this.loadingService.load$(false);
+                },
+            });
+        }
+
+        return this.slicedText$;
     }
 
-    setText$(text: IText['text']) {
-        this._texts$.next(text);
+    private chooseText(texts: IText[], type: Text) {
+        let currentText: IText['text'] = '';
+
+        switch (type) {
+            case 'random':
+                currentText = textRandomizer(texts);
+                break;
+            case 'fromStart':
+                currentText = 'еще не готово';
+                break;
+            case 'fromEnd':
+                currentText = 'еще не готово';
+                break;
+            case 'id':
+                currentText = 'еще не готово';
+                break;
+        }
+
+        const currentSlicedText = sliceText(currentText);
+        this._slicedText$.next(currentSlicedText);
+    }
+
+    setTextForTypingLength$(textForTypingLength: number) {
+        this._textForTypingLength$.next(textForTypingLength);
     }
 }

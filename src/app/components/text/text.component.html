@@ -1,7 +1,22 @@
-<app-intro [componentData]="{ name: 'app-intro', isShow: true }"></app-intro>
+<app-intro
+    class="content"
+    *ngIf="
+        (addInitComponentData({ name: 'app-intro', isShow: true }) | async)?.[
+            'app-intro'
+        ]
+    "
+></app-intro>
 <app-text-for-typing
-    [componentData]="{ name: 'app-text-for-typing', isShow: false }"
+    class="content"
+    *ngIf="
+        (addInitComponentData({ name: 'app-text-for-typing', isShow: false })
+            | async)?.['app-text-for-typing']
+    "
 ></app-text-for-typing>
 <app-result
-    [componentData]="{ name: 'app-result', isShow: false }"
+    *ngIf="
+        (addInitComponentData({ name: 'app-result', isShow: false }) | async)?.[
+            'app-result'
+        ]
+    "
 ></app-result>

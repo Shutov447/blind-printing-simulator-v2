@@ -1,6 +1,3 @@
-<div
-    class="content"
-    *ngIf="(componentsData$ | async)?.['app-result']"
->
-    result works!
-</div>
+<div>Длина текста: {{ textForTypingLength$ | async }} симвлов</div>
+<div>Итоговое время: {{ resultTimeInMinuts$ | async }} минут</div>
+<div>Конечная скорость: {{ resultSpeed$ | async }} сим/мин</div>

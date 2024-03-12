@@ -1,6 +1,28 @@
 <div
-    class="content"
-    *ngIf="(this.componentsData$ | async)?.['app-text-for-typing']"
+    class="text-for-typing"
+    #textForTyping
 >
-    {{ (this.componentsData$ | async)?.['app-text-for-typing'] }}
+    <div *ngFor="let letter of textForTyping$ | async">
+        <span *ngIf="letter !== ' '; else space">{{ letter }}</span>
+    </div>
 </div>
+
+<app-timer
+    [isTimeCounting]="isTimeCounting"
+    *ngIf="!!!(isLoading$ | async)"
+    class="timer"
+></app-timer>
+
+<input
+    type="text"
+    (keydown)="onKeydown($event)"
+    class="input-text-for-typing"
+    #inputTextForTyping
+/>
+
+<mat-spinner
+    class="loading"
+    *ngIf="isLoading$ | async"
+></mat-spinner>
+
+<ng-template #space>&nbsp;</ng-template>

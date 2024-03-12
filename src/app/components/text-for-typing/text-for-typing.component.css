@@ -4,11 +4,37 @@
     height: 100%;
 }
 
-.content {
+.text-for-typing {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    font-size: 2em;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0 10% 0 10%;
+}
+
+.invalid-letter {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.valid-letter {
+    background-color: rgba(0, 255, 0, 0.5);
+}
+
+.untyped-letter {
+    background-color: aliceblue;
+}
+
+.input-text-for-typing {
+    position: absolute;
+    top: -50vh;
+    z-index: -10;
+}
+
+.loading {
+    position: absolute;
+    top: 25px;
+    z-index: 10;
+}
+
+.timer {
+    margin-top: 4%;
 }
